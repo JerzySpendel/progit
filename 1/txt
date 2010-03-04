@@ -1,0 +1,291 @@
+1. Zaczynamy
+1.1 O kontroli wersji
+1.2 Krótka historia gita
+1.3 Podstawy gita
+1.4 Instalacja gita
+1.5 Pierwsza konfiguracja
+1.6 Uzyskiwanie pomocy
+1.7 Podsumowanie
+
+Rozdział 1
+Zaczynamy
+
+W tym rozdziale powiemy o początkach pracy z gitem. Na samym początku wyjaśnimy tło działania narzędzi do kontroli wersji, następnie przejdziemy do tego, jak uruchomić gita na Twoim komputerze, żeby na końcu przejść do tego, jak skonfigurować gita. Po przeczytaniu tego rozdziału powinieneś zrozumieć czym jest git, dlaczego powinieneś go używać oraz być w stanie go skonfigurować do pracy.
+
+1.1 O kontroli wersji
+
+Czym jest kontrola wersji i dlaczego powinieneś się o nią zatroszczyć? Jest to systemem, który rejestruje zmiany w pliku lub zestawie plików, dzięki czemu możesz wrócić do określonej, wcześniejszej wersji. Na przykład, w tej książce, będziemy używali plików z kodem źródłowym, które zostaną poddane kontroli wersji, jednak równie dobrze mógłbyś zastosować to do dowolnych plików na Twoim komputerze.
+
+Jeżeli jesteś grafikiem lub web designerem i chciałbyś zachować kolejne wersje swich grafik lub layoutów (prawdopodobnie będziesz chciał tak robić), system kontroli wersji (z ang. Version Control System - VCS) jest wskazany. Pozwala Tobie na przywrócenie plików do poprzedniego stanu, przywrócenie całego projektu do wcześniejszego stanu, porównania zmian w czasie, zobaczenia kto i kiedy wprowadził zmiany, które mogą powodować problemy, kto i kiedy wprowadził błędy oraz znacznie więcej. Używanie VCS znaczy również, że jeżeli coś zepsujesz lub stracisz pliki, możesz je łatwo odzyskać. Dodatkowo, dostajesz to wszystko kosztem bardzo niewielkiego narzutu.
+
+Lokalne systemy kontroli wersji
+
+Sposobem kontroli wersji, stosowanym przez wielu ludzi, jest kopiowanie plików do innego folderu (prawdopodobnie oznaczonym czasowo, jeżeli są bystrzy). To rozwiązanie jest bardzo powszechne, ponieważ jest proste, jednak również jest bardzo podatne na błędy. Łatwo zapomnieć, w którym folderze jesteś i przypadkowo zapisać zły plik lub skopiować pliki których nie chcesz.
+
+Żeby rozwiązać te problemy, programiści dawno temu stworzyli lokalne systemy kontroli wersji, które mają proste repozytorium, które trzyma wszystkie zmiany w pliku pod kontrolą rewizji (zobacz rysunek 1-1).
+
+(Rysunek 1-1: Diagram lokalnego systemu kontroli wersji)
+
+Jednym z najbardziej popularnych narzędzi do lokalnych systemów kontroli wersji jest rcs, który jest ciągle rozprowadzany z dużą liczbą systemów. Nawet popularny system operacyjny Mac OS X zawiera polecenie rcs kiedy instalujesz narzędzia deweloperskie. To narzędzie najprościej mówiąc, trzyma zestaw patchy (są to różnice między plikami) z jednej zmiany do kolejnej w specjalnym formacie, na dysku. Możliwym jest odtworzenie dowolnego pliku, którego potrzebujemy, w dowolnym czasie, poprzez dodanie wszystkich patchy do siebie.
+
+Centralne systemy kontroli wersji
+
+Kolejnym znaczącym problemem, z którym ludzie się spotykają, jest potrzeba współpracy z różnymi programistami. Żeby poradzić sobie z tym, stworzono centralne systemy kontroli wersji (z ang. Centralized Version Control Systems - CVCS). Takie systemy jak CVS, Subversion czy Perforce posiadają pojedyńczy serwer, który zawiera wszystkie wersje plików oraz informacje o klientkach którzy będą pracować z plikami z tego centralnego miejsca. Przez wiele lat, było to standardem kontroli wersji (zobacz rysunek 1-2).
+
+(Rysunek 1-2 - Diagram Centralnego systemu kontroli wersji)
+
+Takie podejście oferuje wiele zalet, specjalnie względem lokalnym VCS. Na przykład, każdy widzi zmiany, które inni zrobili w projekcie.
+Administrator posiada pełną kontrolę nad tym kto co może; jest znacznie łatwiej zarządzać CVCS niż jest to możliwe z lokalnymi repozytoriami u każdego
+klienta.
+
+Jednakże, takie podejście ma również trochę poważnych uniedogodnień. Najbardziej oczywistym jest centralny serwer. Jeżeli padnie na godzinę, to przez ten czas nikt nie będzie mógł współpracować z kimś innym lub zapisywać wersje swoich zmian tego nad czym pracuje. Jeżeli twardy dysk centralnej bazy zostanie uszkodzony a kopia zapasowa nie zostanie wcześniej utworzona - stracisz absolutnie wszystko. Całą historia projektu z wyjątkiem pojedyńczych kopii aktualnego kodu (jednak już bez historii zmian) które ludzie mają na swoich własnych maszynach. Lokalne systemy kontroli wersji cierpią na ten sam problem. Jeżeli masz całą historię projektu w jednym miejscu, ryzykujesz utratą wszystkiego.
+
+Rozproszone systemy kontroli wersji
+
+W tym momencie rozproszone systemy kontroli wersji (Distributed Version Control System - DVCS) wchodzą na scenę. W DVCS (takich jak git, Mercurial, Bazaar czy Darcs), klienci nie pobierają po prostu ostatniej wersji plików, posiadają kopię całego repozytorium. W przypadku gdy jakikolwiek serwer umrze, a poszczególni klienci współpracowali przez niego, każda z kopii może posłużyć do przywrócenia repozytorium na serwerze. Każdy kopia jest w rzeczywistości pełną kopią wszystkich danych (zobacz rysunek 1-3).
+
+(Rysunek 1-3 - diagram rozproszonego systemu kontroli wersji)
+
+Co więcej, każdy z klientów całkiem nieźle sprawdza się mając kilka zdalnych repozytoriów z którymi mogą pracować, więc mogą współpracować z różnymi grupami ludzi w różnych kierunkach tego samego projektu. Pozwala to na ustalenie kilku sposób pracy, co nie jest możliwe w scentralizowanym systemie, jakim jest model hierarchiczny.
+
+1.2 Krótka historia gita
+
+Jak wiele wspaniałych rzeczy w życiu, git zaczął od kreatywnej destrukcji i odrobiną kontrowersji. Kernel Linuksa jest dość dużym projektem Open Source. Przez większość czasu rozwoju kernela Linuksa (1991 - 2002), zmiany w kodzie były rozprowadzane poprzez patche oraz archiwa plików. W 2002, projekt zaczął używać własnościowego DVCS zwanego BitKeeper.
+
+W 2005, relacje między społecznością, która rozwijała Linuksa a komercyjną firmą, która rozwijała BitKeepera załamały się i zrezygnowano z dalszej możliwości używania BitKeepera do darmowego użytku. To zachęciło społeczność deweloperów Linuksa (i w szczególności Linusa Torvaldsa, twórcę Linuksa) do stworzenia własnego narzędzia bazującego na wiedzy, którą zdobyli podczas używania BitKeepera. Kilka założeń na których miał się opierać nowy projekt:
+
+- szybkość,
+- prosty design,
+- silne wsparcie dla nieliniowego wytwarzania oprogramowania (tysiące równoległych gałęzi),
+- całkowite rozproszenie,
+- zdolność do efektywnego trzymania dużych projektów jak kernel Linuksa (szybkość i rozmiar danych).
+
+Od kiedy powstał w 2005, git rozwinął się i dojrzał do bycia łatwym w użytku i zdołał utrzymać początkowe założenia. Jest niesamowicie szybki, bardzo wydajny przy dużych projektach i posiada niesamowity system dla nieliniowego wytwarzania oprogramowania (patrz Rozdział 3).
+
+1.3 Podstawy gita
+
+Więc czym jest git? Bardzo ważne jest abyś przyswoił sobie tą część książki, ponieważ jeżeli zrozumiesz czym git jest i jak pracuje, wtedy jego efektywne używanie będzie dla Ciebie znacznie prostsze. Żeby się jego nauczyć, spróbuj nie zaprzątać sobie głowy informacjami o innych systemach kontroli wersji, jak Subversion czy Perforce. Pozwoli Ci to uniknąć zamieszania podczas używania gita. Git przechowuje i myśli o danych w znacznie inny sposób niż inne systemy, nawet jeżeli interfejs użytkownika jest bardzo podobny. Zrozumienie tych różnic pozwoli Ci uniknąć zakłopotania podczas używania go.
+
+Zrzuty zamiast różnic.
+
+Głównią różnicą między gitem a innymi VCS jest sposób w jaki git myśli o danych. Większość systemów trzyma informacje jako listę zmian bazującej na oryginalnym pliku. Systemy te (CVS, Subversion, Perforce, Bazaar i inne) informacje trzymają jako zbiór plików i zmian dokonanych na nich przez cały czas, tak jak pokazuje to rysunek 1-4.
+
+(Rysunek 1-4: Inne systemy trzymają dane jako zmiany na bazowych wersjach każdego pliku)
+
+Git nie pracuje i przechowuje danych w ten sposób. Zamiast tego git myśli o danych bardziej jako zbiór zrzutów mini systemu plików. Za każdym razem kiedy commitujesz zmiany lub zapisujesz stan Twojego projektu w gitcie, najprościej mówiąc, bierze on obraz tego jak Twoje pliki wyglądają w tej chwili i zachowuje referencję do tego zrzutu. Żeby być efektywnym, same pliki nie są zmieniane, git nie zapisuje ich ponownie - po prostu zapisuje skrót do identycznego pliku który już jest zachowany. Git myśli o danych bardziej w sposób pokazanym na rysunku 1-5.
+
+(Rysunek 1-5: Git przechowuje dane jako zrzuty projektu)
+
+Jest to ważna rozbieżność między gitem a prawie każdym innym system kontroli wersji. Czyni to gita zmieniający prawie każdym aspekt kontroli wersji w stosunku do innych systemów kopiujących z poprzedniej generacji. Powoduje to, że git zachowuje się bardziej jako mini system plików z niesamowicie potężnymi narzędziany zbudowanymi na tym, bardziej niż prosty VCS. Odkryjemy kilka zalet tego sposobu myślenia o danych kiedy odkryjemy gałęzie w rozdziale 3.
+
+Prawie każda operacja jest lokalna
+
+Większość operacji w gitcie potrzebuje jedynie lokalnym plików i zasobów do działania - generalnie żadna informacja nie jest potrzebna z innego komputera w sieci. Jeżeli musisz użyć centralnego systemu kontroli wersji, większość operacji ma opóźnienia związane z siecią, w tym aspekcie git sprawi, że znaczniesz uważać, że bogowie prędkości pobłogosławili gita swoimi nieziemskimi mocami. Ponieważ masz całą historię projektu na swoim dysku, większość operacji jest niemalże natychmiastowa.
+
+Na przykład, przeglądając historię projektu, git nie musi pobierać jej z serwera - po prostu czyta ją bezpośrednio z dysku. Oznacza to, że widzisz historię projektu niemalże natychmiast. Jeżeli chcesz zobaczyć zmiany pomiędzy obecną wersją pliku a plikiem sprzed miesiąca, git może zobaczyć plik sprzed miesiąca i wyliczyć\ równięcę lokalnie, zamiast wysyłać zapytanie do zdalnego serwera czy pobierać starszą wersję pliku z serwera na dysk.
+
+Znaczy to również, że jest bardzo mało rzeczy, których nie możesz zrobić błędąc odłączonym od sieci lub VPNa. Jeżeli wsiądziesz do samolotu lub pociągu a chcesz trochę popracować, możesz commitować dopóki nie potrzebujesz połączenia internetowego do uploadu. Jeżeli będziesz w domu a Twój klient VPN nie działa poprawnie, nadal możesz pracować. W wielu innych systemach, robienie tego jest albo niemożliwe albo bolesne. Np. w Perforce, nie możesz dużo zrobić kiedy nie jesteś podłączony do serwera. W Subversion i CVS, możesz edytować pliki, ale nie możesz commitować zmian do Twojego repozytorium (bo nie jesteś z nim połączony). Może to nie wygląda na wielką niedogodność, ale możesz być zaskoczonym jak wielką zmianę to robi.
+
+Integralność gita
+
+Wszystko w gitcie jest sprawdzane, zanim zostanie zachowane, przez sumy kontrolne. To znaczy, że niemożliwa jest zmiana treści żadnego pliku czy folderu tak, aby git o tym nie wiedział. Ta funkcjonalność jest wbudowana w gita na najniższym poziomie i jest integralną częścią jego filozofii. Nie możesz stracić informacji w czasie przesyłania lub dostać uszkodzony plik tak aby git się o tym nie dowiedział.
+
+Mechanizmem którego git używa do sprawdzania sum kontrolnych jest hash SHA-1. Jest to 40 znakowy ciąg złożony z heksadecymalnych znaków (0-9 i a-f) wyliczany na podstawie treści pliku lub folderu. SHA-1 wygląda np. tak:
+
+<code>
+24b9da6552252987aa493b52f8696cd6d3b00373
+</code>
+
+Będziesz widział te hashe w różnych miejscach, ponieważ git bardzo często ich używa. W gruncie rzeczy, git przechowuje wszystko nie pod nazwą pliku, ale w repozytorium adresowanym przez wartości hashy.
+
+Git generalnie tylko dodaje dane
+
+Kiedy wykonujesz jakąś akcję w gitcie, prawie wszystkie z nich tylko dodają dane do repozytorium gita. Bardzo ciężko zmusić system do zrobienia czegokolwiek czego nie ma możliwości cofnięcia lub wyczyszczenia danych w jakikolwiek sposób. W każdym VCS możesz stracić lub zepsułeś zmiany których jeszcze nie scommitowałeś. Ale po commicie, jest bardzo ciężko stracić dane, szczególnie jeżeli regularnie umieszczasz je w innym repozytorium.
+
+To czyni używanie gita jak zabawę, ponieważ wiemy, że możemy eksperymentować bez niebezpieczeństwa kilkutrotnego poważnego skopania rzeczy. Dla głębszego wglądu jak git przechuje dane i jak możesz je odzyskać te, które wydają się utracone, zobacz rodział 9.
+
+Trzy stany.
+
+A teraz skup swoją uwagę. To jest główna rzecz do zapamiętania na temat gita, jeżeli chcesz, żeby reszta Twojej nauki poszła gładko. Git ma trzy główne stany Twoich plików: scommitowany, zmodyfikowany i przeniesiony do poczekalnie (staged). Scommitowany znaczy, że dane są bezpieczenie zachowane w Twoim lokalnym repozytorium. Zmodyfikowane, że zmieniłeś swoje pliki, ale jeszcze ich nie scommitowałeś do repozytorium. Natomiast zbuforowany oznacza, że masz pliki oznaczone jako zmodyfikowane w obecnej wersji zostaną zawarte w następnym commitcie.
+
+To prowadzi nas do trzech głównych sekcji proektu gita: katalog gita, katalog roboczy i poczekalnia (staging area).
+
+(Rysunek 1-6: Katalog roboczy, bufor, i katalog gita)
+
+Katalog gita jest tym, gdzie git przechowuje metadane oraz bazę obiektów dla Twojego projektu. To najważniejsza część gita i jest kopiowana kiedy klonujesz repozytorium z innego komputera.
+
+Katalog roboczy jest kopią jednej z wersji projektu trzymanej w repozytorium. Pliki są wyciągane z repozytorium w folderze gita i umieszczane na dysku dla Twojego użytku i modyfikacji.
+
+Poczekalnia jest prostym plikiem, będącymw folderze gita, który przechowuje informacje na temat tego co zostanie umieszczone w następnym commicie.
+
+Podstawowy sposób pracy wygląda mniej więcej tak:
+
+1. Modyfikujesz swoje pliku w katalogu roboczym.
+2. Przenosisz pliki do poczekalni.
+3. Robisz commit, który zabiera pliki, takimi jakimi są z poczekalni i trwale zachowuje zrzuty w katalogu gita.
+
+Jeżeli określona wersja pliku jest w katalogu gita, jest uważana za scommitowaną. Jeżeli jest zmodyfikowany, ale została dodany do poczekalni. I jeżeli zmiany, od poprzedniego sprawdzenia stanu, ale nie zostały skierowany do poczekalni, jest zmodyfikowany. W rozdziale drugim, nauczysz się więcej na temat stanów i jak możesz korzystać z ich zalet lub przeskakiwać całkowicie przeniesienie do poczekalni.
+
+1.4 Instalacja gita
+
+Żeby zacząć używać gita, pierwszą rzeczą którą musisz wykonać jest jego instalacja. Możesz wykonać to na wiele różnych sposobów. Dwoma głównymi jest instalacja ze źródeł lub istniejących paczek dla Twojej platformy.
+
+Instalacja ze źródeł
+
+Jeżeli możesz, generalnie przydatna jest instalacja gita ze źródeł, wtedy dostajesz zawsze, najnowszą wersję. Każda wersja gita zawiera przydatne ulepszenia, więc posiadanie najnowszej wersji przeważnie jest najlepszą drogą, w przypadku jeżeli czujesz się komfortowo kompilując oprogramowanie ze źródeł. W przypadku, gdy wiele dystrybucji Linuksa zawiera bardzo stare paczki, dopóki nie masz najnowszej dystrybucji lub używasz backportów, instalacja ze źródeł jest najlepszym podejściem.
+
+Żeby zainstalować gita, potrzebujesz zainstalować kilka bibliotek które git używa: curl, zlib, openssl, expat i libiconv. Jeżeli masz w systemie yum (np. Fedora) lub apt-get (dystrybucje bazujące na Debianie) możesz użyć jedną z poniższych komend do instalacji wymaganych bibliotek:
+
+<code>
+$ yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel
+
+$ apt-get install libcurl4-gnutls-dev libexpat1-dev gettext libz-dev
+</code>
+
+Kiedy już wszystko masz, możesz pobrać najnowszy snapshot ze strony gita:
+
+<code>
+http://git-scm.com/download
+</code>
+
+Następnie, skompilować i zainstalować:
+
+<code>
+$ tar -zxf git-1.6.0.5.tar.gz
+$ cd git-1.6.0.5
+$ make prefix=/usr/local all
+$ sudo make prefix=/usr/local install
+</code>
+
+Kiedy instalacja sie zakończy możesz pobierać gita przez gita:
+
+<code>
+$ git clone git://git.kernel.org/pub/scm/git/git.git
+</code>
+
+Instalacja na Linuksie
+
+Jeżeli chcesz zainstalować gita z binarnych paczek, najprościej użyć do tego menedżera pakietów, który wchodzi w skład dystrybucji której używasz. Jeżeli jest to Fedora, możesz użyć yum:
+
+<code>
+$ yum install git-core
+</code>
+
+Natomiast, jeżeli jest to dystrybucja oparta na Debianie, jak Ubuntu, spróbuj apt-get:
+
+<code>
+$ apt-get install git-core
+</code>
+
+Instalacja na Macach
+
+Są dwie proste drogi do instalacji gita na Macach. Łatwiejsza to użycie graficznego instalatora git, którego można pobrać ze stron Google Code:
+
+<code>
+http://code.google.com/p/git-osx-installer
+</code>
+
+Kolejnym sposobem instalacji gita są MacPorty (http://www.macports.org). Jeżeli masz zainstalowane MacPorty, instalujesz gita poprzez wydanie polecenia:
+
+<code>
+$ sudo port install git-core +svn +doc +bash_completion +gitweb
+</code>
+
+Nie musisz dodawać dodatków, jednak prawdopodobnie będziesz chciał dołączyć +svn w przypadku gdybyś chciał używać gita z repozytoriami Subversion (patrz rozdział 8).
+
+Instalacja na Windowsie
+
+Instalacja gita na Windowsie jest bardzo prosta. Projekt msysGit ma jedną z najłatwierszych procedur instalacyjnych. Po prostu ściągamy instaltor ze stron Google Code i uruchamiamy:
+
+<code>
+http://code.google.com/p/msysgit
+</code>
+
+Po instalacji masz obie wersje, tekstową (włączając w to klienta SSH) i standarowe GUI.
+
+1.5 Pierwsza konfiguracja
+
+Teraz kieszy masz w swoim systemie gita, będziesz chciał ustawić kilka rzeczy. Powinieneś zrobić zrobić je tylko raz, zostaną zachowane między upgradeami. Możesz również zmienić je poprzez uruchomienie poleceń jeszcze raz.
+
+Git posiada narzędzie zwane git config, które pozwala Ci na podejrzenie oraz ustawienie zmiennych konfiguracyjnych, które kontrolują wszystkie aspekty tego jak git wygląda oraz zachowuje się jesgo komendy. Zmienne te mogą być przechowywane w 3 różnych miejscach:
+
+- /etc/gitconfig - zawiera wartości dla każdego użytkownika w systemie oraz dla wszystkich ich repozytoriów. Jeżeli dodasz opcję --system do git config, zostaną odczytane i zapisane wartości z tego pliku.
+- ~/.gitconfig - dedykowany dla Twojego użytkownika. Możesz rozkazać gitowi czytanie i zapis z tego pliku poprzez dodanie opcji --global.
+- plik konfiguracyjny w folderze repozytorium gita (./git/config). Dedykowany dla pojedyńczego repozytorium. Każdy poziom nadpisuje wartości z poprzedniego poziomu, więc zmienne z .git/config są ważniejsze niż te w /etc/gitconfig.
+
+W systemie Windows, git poszukuje pliku .gitconfig w folderze $HOME (w większości przypadków C:\Documents and Settings\$USER). Również ciągle przeszukuje /etc/gitconfig, oczywiście w stosunku do relatywnej ścieżki MSysGit, która znajduje się tam gdzie zdecydowałeś podczas instalacji gita na Twoim Windowsie.
+
+Twoja tożsamość
+
+Pierwszą rzeczą którą powinieneś wykonać kiedy instalujesz git jest ustawienie nazwy użytkownika oraz adresu e-mail. Jest to ważne, ponieważ przy każdym commitcie git używa tych informacji dodając je do Twoich commitów, dzięki czemu pozwala to na identyfikację osoby, która go zrobiła:
+
+<code>
+$ git config --global user.name "Jan Kowalski"
+$ git config --global user.email "jankowalski@poczta.pl"
+</code>
+
+Ponownie, potrzebujesz zrobić to tylko raz jeżeli ustawiasz opcję --global, ponieważ wtedy git zawsze będzie używał tych informacji do wszystkiego co zrobisz w systemie. Jeżeli z jakiegoś powodu chcesz użyć innej nazwy użytkownika lub e-mail'a dla konkretnego projektu, użyj komendy konfiguracji bez parametru --global kiedy jesteś w folderze projektu.
+
+Twój edytor
+
+Teraz, kiedy Twoja tożsamość jest ustawiona, możesz skonfigurować domyślny edytor tekstu, którego będziesz używał, kiedy git będzie potrzebował abyś napisał jakąś wiadomość. Domyślnie, git używa Twojego domyślnego, systemowego edytora tekstu, przeważnie jest to Vi lub Vim. Jeżeli chcesz użyć innego edytora, jak np. Emacs, powinieneś wydać takie polecenie:
+
+<code>
+$ git config -- global core.editor emacs
+</code>
+
+Twoje narzędzie do diffów
+
+Kolejną użyteczną opcją, którą możesz chcieć skonfigurować jest domyślne narzędzie do diffów, używane przy rozwiązywaniu konflików. Powiedzmy, że chcesz używać vimdiff:
+
+<code>
+$ git config --global merge.tool vimdiff
+</code>
+
+Git akceptuje kdiff3, tkdiff, meld, xxdiff, emerge, vimdiff, gvimdiff, ecmerge i opendiff jako poprawne narzędzia łączące. Możesz również ustawić własne narzędzia. Aby uzyskać więcej informacji zobacz rozdział 7.
+
+Sprawdzanie ustawień
+
+Jeżeli chcesz zobaczyć ustawienia, możesz użyć polecenia git config --list do wyświetlenia wszystkich ustawień:
+
+<code>
+$ git config --list
+user.name=Jan Kowalski
+user.email=jankowalski@poczta.pl
+color.status=auto
+color.branch=auto
+color.interactive=auto
+color.diff=auto
+...
+</code>
+
+Możesz zobaczyć te same opcje więcej niż raz, ponieważ git czyta je z różnych plików (np. /etc/gitconfig i ~/.gitconfig). W tym przypadku, git używa ostatniego wartości dla każdej unikalnej opcji.
+
+Możesz również zobaczyć co git ma przypisane do jednej konkretnej zmiennej wpisując git config <zmienna>:
+
+<code>
+$ git config user.name
+Jan Kowalski
+</code>
+
+1.6 Uzyskiwanie pomocy
+
+Jeżeli kiedykolwiek potrzebowałeś pomocy podczas używania gita, są trzy sposoby aby dostać się do stron manuala pomocy dla któregokolwiek z poleceń gita:
+
+<code>
+$ git help <polecenie>
+$ git <polecenie> --help
+$ man git-<polecenie>
+</code>
+
+Na przykład, możesz uzyskać pomoc odnośnie polecenia konfiguracji poprzez uruchomienie
+
+<code>
+$ git help config
+</code>
+
+Polecenia te są użyteczne, ponieważ możesz zyskać do nich dostęp wszędzie, nawet będąc offline. Jeżeli strony podręcznika man i tak książka nie są wystarczające a potrzebujesz osobistej pomocy, możesz spróbować na kanałach irc #git lub #github na serwerach Freenode (irc.freenode.net). Polecenia te są regularnie używane przez setki ludzi, którzy dobrze znają gita i często zaoferują swoją pomoc.
+
+1.7 Podsumowanie
+
+Teraz powinieneś zrozumieć podstawy tego czym git jest i jak się różni od scentralizowanych systemów kontroli wersji które mogłeś używać. Powinieneś teraz mieć również działającą wersję gita na swoim systemie z ustawioną tożsamością. Czas nauczyć się podstaw gita.
